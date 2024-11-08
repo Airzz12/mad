@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>NNN Report</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #loading,
+        #start,
+        #data {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #loading {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        #start {
+            font-size: 28px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #data {
+            display: none;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        #data span {
+            display: block;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #data span:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Scrollbar Styles */
+        #data::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        #data::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #data::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading Proxy...</div>
+    <div id="start">
+        <br />
+    </div>
+    <div id="data"></div>
+
+    <script>
+    window.onload = async () => {
+        const loading = document.getElementById("loading");
+        const start = document.getElementById("start");
+        const data = document.getElementById("data");
+
+        const error = (message) => {
+            loading.innerText = message;
+            throw message;
+        };
+
+        const pick = (array) => array[Math.floor(Math.random() * array.length)];
+        const hacked_statements = ["Yes", "Maybe", "Most Likely", "Highly Probable", "Potentially", "Unlikely But Still Possible", "Almost Certainly", "Definitely", "Absolutely"];
+
+        try {
+            const memes = [];
+            const push = (tit, con, add) => memes.push(`${tit}: ${con}${add || ""}`);
+
+            let step = 0;
+
+            let my_ip = await (await fetch("https://wtfismyip.com/json").catch()).json().catch();
+            let ip_data = await (await fetch(`https://uncors.vercel.app/?url=http://ip-api.com/json/${my_ip.YourFuckingIPAddress}`).catch()).json().catch();
+
+            loading.style.display = "none";
+            start.style.display = "block";
+
+            if (my_ip && ip_data) {
+                push("Haha", "Gottem")
+                push("IP Address", ip_data.query);
+                push("Hostname", my_ip.YourFuckingHostname);
+                push("Country", `${ip_data.country} (${ip_data.countryCode})`);
+                push("Region", `${ip_data.regionName} (${ip_data.region})`);
+                push("City", ip_data.city);
+                push("Latitude", ip_data.lat);
+                push("Longitude", ip_data.lon);
+                push("ISP", my_ip.YourFuckingISP);
+                push("Autonomous System", ip_data.as);
+            } else {
+                push("IP Address", "::ffff:172.70.126.134");
+            }
+            push("User Agent", navigator.userAgent);
+            push("Connection Method", "GET");
+            push("Request URL", "/");
+            push("Request Path", "/");
+            push("Request Protocol", "https");
+            push("Secure Connection", false ? "Yes" : "No");
+            push("Proxy IPs", "[]");
+            push("Referrer", document.referrer)
+            push("Browser cookies", navigator.cookieEnabled)
+            push("Browser online", navigator.onLine)
+            push("Window Properies", Object.keys(window).length);
+            push("Window Width", window.innerWidth, "px");
+            push("Window Height", window.innerHeight, "px");
+            push("Window Ratio", `${window.innerWidth / window.innerHeight}/1`);
+            push("Screen Width", window.screen.availWidth, "px");
+            push("Screen Height", window.screen.availHeight, "px");
+            push("Screen Ratio", `${window.screen.availWidth / window.screen.availHeight}/1`);
+            push("Screen Pixel Ratio", window.devicePixelRatio, "/1");
+            push("Screen DPI", window.devicePixelRatio);
+            push("Screen Color Depth", window.screen.colorDepth);
+            push("Screen Orientation", `${window.screen.orientation.type} (${window.screen.orientation.angle}°)`);
+            push("Screen Rotation", window.screen.orientation.angle);
+            push("OS", `${navigator.platform}`);
+            push("Available Browser Memory", typeof window.performance.memory != "undefined" ? Math.round(window.performance.memory.jsHeapSizeLimit / 1024 / 1024) : null, "MB");
+            push("CPU Threads", `${navigator.hardwareConcurrency}`);
+            const canvas = document.createElement("canvas");
+            let gl;
+            let debugInfo;
+            try {
+                gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+                debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+            } catch (e) {}
+            if (gl && debugInfo) {
+                push("GPU Vendor", gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL));
+                push("GPU Info", gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL));
+            }
+            push("Device Memory", `${navigator.deviceMemory}`);
+            push("System Languages", navigator.languages.join(", "));
+            push("Language", `${navigator.language}`);
+            let date = new Date();
+            push("Current Time", `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`);
+            if (ip_data) push("Timezone", ip_data.timezone);
+            push("Timezone Offset", date.getTimezoneOffset() / 60, " hours");
+            push("Hacked", pick(hacked_statements));
+            push("Stop watching", "Porn");
+            push("You are", "Cringe");
+            push("Current Status", "\u{D9E}");
+
+            // Displaying the data immediately without a click
+            loading.style.display = "none";
+            data.style.display = "block";
+            document.title = `lmao this you? [${my_ip ? my_ip.YourFuckingIPAddress : "::ffff:172.70.126.134"}]`;
+                
+            memes.forEach((meme) => {
+                const el = document.createElement("span");
+                el.textContent = meme;
+                data.appendChild(el);
+            });
+
+        } catch (e) {
+            error(`${e.message}`);
+        }   
+    };
+    </script>
+</body>
+</html>
